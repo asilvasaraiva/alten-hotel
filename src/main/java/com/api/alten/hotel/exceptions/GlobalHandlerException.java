@@ -42,4 +42,11 @@ public class GlobalHandlerException {
                 exception.getMessage());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
+
+    @ExceptionHandler(UnavailableDateException.class)
+    public final ResponseEntity<StandardResponseException> handleUnavailableDateException(UnavailableDateException exception){
+        StandardResponseException exceptionResponse = new StandardResponseException(LocalDateTime.now(),
+                exception.getMessage());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.PRECONDITION_FAILED);
+    }
 }

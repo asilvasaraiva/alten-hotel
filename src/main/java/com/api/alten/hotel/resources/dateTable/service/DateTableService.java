@@ -7,6 +7,8 @@ public interface DateTableService {
 
     public boolean checkAvailability(LocalDate checkIn,LocalDate checkOut);
 
+    public List<LocalDate> findOccurrences(LocalDate checkIn, LocalDate checkOut);
+
     public  void updateDateTable(LocalDate checkIn,LocalDate checkOut,Long reservationCode);
 
     public void saveDates(Long reservationCode,LocalDate date);

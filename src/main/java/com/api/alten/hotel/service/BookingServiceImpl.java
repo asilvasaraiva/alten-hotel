@@ -33,12 +33,7 @@ public class BookingServiceImpl implements BookingService{
         return reservationService.createReservation(reservationRequest.getClientName(),checkIn,checkOut);
     }
 
-    private void preValidations(LocalDate checkIn,LocalDate checkOut){
-        isValidStartingDate(checkIn);
-        isValidAmountOfDays(checkIn,checkOut);
-        isValidMonth(checkIn,checkOut);
-        isValidYear(checkIn,checkOut);
-    }
+
 
 
 }

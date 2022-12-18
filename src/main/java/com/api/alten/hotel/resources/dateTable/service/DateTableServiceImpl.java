@@ -21,13 +21,18 @@ public class DateTableServiceImpl implements DateTableService{
 
     @Override
     public boolean checkAvailability(LocalDate checkIn,LocalDate checkOut) {
-        var intervalOfDates = checkIn.equals(checkOut)? List.of(checkIn) : checkIn.datesUntil(checkOut).toList();
-        var occurrences = dateTableRepository.findByBookedDateIn(intervalOfDates);
+        var occurrences = findOccurrences(checkIn, checkOut);
         if(occurrences.size() == 0){
             return true;
         }else{
             throw new UnavailableDateException("Dates "+ occurrences.toString() +" already reserved");
         }
+    }
+
+    @Override
+    public List<LocalDate> findOccurrences(LocalDate checkIn, LocalDate checkOut) {
+        var intervalOfDates = checkIn.equals(checkOut)? List.of(checkIn) : checkIn.datesUntil(checkOut).toList();
+        return dateTableRepository.findByBookedDateIn(intervalOfDates);
     }
 
     @Override

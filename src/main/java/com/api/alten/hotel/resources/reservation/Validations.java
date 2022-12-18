@@ -15,26 +15,33 @@ public class Validations {
     private static final int MAX_AMOUNT_OF_DAYS = 3;
     private static final int MIN_DAYS_TO_START_A_RESERVATION = 1;
 
-    public static void isValidMonth(LocalDate checkIn, LocalDate checkOut){
+    public static void preValidations(LocalDate checkIn,LocalDate checkOut){
+        isValidStartingDate(checkIn);
+        isValidAmountOfDays(checkIn,checkOut);
+        isValidMonth(checkIn,checkOut);
+        isValidYear(checkIn,checkOut);
+    }
+
+    private static void isValidMonth(LocalDate checkIn, LocalDate checkOut){
         if( !(Period.between(checkIn, checkOut).getMonths() <= MAX_LENGTH_OF_MONTHS)){
             throw new LimitOfDaysException("The reservation can not be made more than"+ MAX_LENGTH_OF_MONTHS+ "month ahead");
         }
     }
 
-    public static void isValidYear(LocalDate checkIn,LocalDate checkOut){
+    private static void isValidYear(LocalDate checkIn,LocalDate checkOut){
         if(!(checkIn.getYear() == LocalDate.now().getYear() && checkOut.getYear() == LocalDate.now().getYear())){
             throw new LimitOfDaysException("The reservation can not be made more than"+ MAX_LENGTH_OF_MONTHS+ "month ahead");
         }
     }
 
-    public static void isValidAmountOfDays(LocalDate checkIn, LocalDate checkOut) {
+    private static void isValidAmountOfDays(LocalDate checkIn, LocalDate checkOut) {
         var daysBetween = Period.between(checkIn, checkOut).getDays();
         if( !(daysBetween>=0 && daysBetween <= MAX_AMOUNT_OF_DAYS)){
             throw new InvalidCheckInDateException("The maximum length of days per reservation is "+MAX_AMOUNT_OF_DAYS+ " days.");
         }
     }
 
-    public static void isValidStartingDate(LocalDate checkIn){
+    private static void isValidStartingDate(LocalDate checkIn){
         if(!(Period.between(LocalDate.now(), checkIn).getDays() >= MIN_DAYS_TO_START_A_RESERVATION)){
             throw new InvalidCheckInDateException("The day selected for check-in must be superior than today's date.");
         }

@@ -5,6 +5,10 @@ import java.util.List;
 
 public interface DateTableService {
 
-    public boolean checkAvailability(List<LocalDate> intervalOfDates);
+    public boolean checkAvailability(LocalDate checkIn,LocalDate checkOut);
+
+    public  void updateDateTable(LocalDate checkIn,LocalDate checkOut,Long reservationCode);
+
     public void saveDates(Long reservationCode,LocalDate date);
 }
+

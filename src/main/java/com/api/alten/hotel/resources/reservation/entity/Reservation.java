@@ -29,12 +29,6 @@ public class Reservation implements Serializable {
     @ToString.Exclude
     private Room room;
 
-    @ManyToOne
-    @JoinColumn(name = "date_table_id")
-    @JsonIgnore
-    @ToString.Exclude
-    private DateTable dataTable;
-
     @Column(name = "client_name")
     private String clientName;
 

@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 
-import static com.api.alten.hotel.resources.reservation.Validations.isValidAmountOfDays;
-import static com.api.alten.hotel.resources.reservation.Validations.isValidStartingDate;
+import static com.api.alten.hotel.resources.reservation.Validations.*;
 
 
 @Service
@@ -30,17 +29,20 @@ public class BookingServiceImpl implements BookingService{
         var checkOut = LocalDate.parse(reservationRequest.getCheckOut());
         var client = reservationRequest.getClientName();
 
-        dateTableService.checkAvailability( checkIn.datesUntil(checkOut).collect(Collectors.toList()));
+        preValidations(checkIn,checkOut);
 
-        Reservation booking = reservationService.createReservation(client,checkIn,checkOut);
-
-        checkIn.datesUntil(checkOut).forEach(d-> dateTableService.saveDates(booking.getReservationCode(),d));
+        var booking = reservationService.createReservation(client,checkIn,checkOut);
+        dateTableService.updateDateTable(checkIn,checkOut, booking.getReservationCode());
 
         return booking;
     }
 
-    private boolean preValidation(LocalDate checkIn,LocalDate checkOut){
-        return isValidStartingDate(checkIn) && isValidAmountOfDays(checkIn, checkOut);
+    private void preValidations(LocalDate checkIn,LocalDate checkOut){
+        isValidStartingDate(checkIn);
+        isValidAmountOfDays(checkIn,checkOut);
+        isValidMonth(checkIn,checkOut);
+        isValidYear(checkIn,checkOut);
+        dateTableService.checkAvailability( checkIn,checkOut);
     }
 
 

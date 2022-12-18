@@ -3,10 +3,9 @@ package com.api.alten.hotel.resources.reservation.service;
 
 
 import com.api.alten.hotel.exceptions.UnavailableDateException;
+import com.api.alten.hotel.resources.dateTable.service.DateTableService;
 import com.api.alten.hotel.resources.reservation.entity.Reservation;
 import com.api.alten.hotel.resources.reservation.repository.ReservationRepository;
-import com.api.alten.hotel.resources.room.entity.Room;
-import com.api.alten.hotel.resources.room.repository.RoomRepository;
 import com.api.alten.hotel.resources.room.service.RoomService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +23,9 @@ public class ReservationService {
     @Autowired
     private RoomService roomService;
 
+    @Autowired
+    private DateTableService dateTableService;
+
     @Transactional
     public void save(Reservation reservation){
         try {
@@ -37,14 +39,19 @@ public class ReservationService {
 
 
     public Reservation createReservation(String client, LocalDate checkIn,LocalDate checkOut){
+        dateTableService.checkAvailability(checkIn,checkOut);
         var room = roomService.getRoom();
-        var book = new Reservation();
-        book.setClientName(client);
-        book.setRoom(room);
-        book.setCheckIn(checkIn);
-        book.setCheckOut(checkOut);
-        book.setReservationCode(genReservationCode());
+        var book = Reservation.builder()
+                .clientName(client)
+                .room(room)
+                .checkIn(checkIn)
+                .checkOut(checkOut)
+                .reservationCode(genReservationCode())
+                .build();
         save(book);
+
+        dateTableService.updateDateTable(checkIn,checkOut, book.getReservationCode());
+
         return book;
     }
 

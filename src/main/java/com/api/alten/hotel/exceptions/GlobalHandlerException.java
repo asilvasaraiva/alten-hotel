@@ -16,8 +16,8 @@ public class GlobalHandlerException {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(InvalidCheckInDate.class)
-    public final ResponseEntity<StandardResponseException> handleInvalidCheckInExceptions(InvalidCheckInDate exception){
+    @ExceptionHandler(InvalidCheckInDateException.class)
+    public final ResponseEntity<StandardResponseException> handleInvalidCheckInExceptions(InvalidCheckInDateException exception){
         StandardResponseException exceptionResponse = new StandardResponseException(LocalDateTime.now(),
                 exception.getMessage());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.PRECONDITION_FAILED);
@@ -32,6 +32,12 @@ public class GlobalHandlerException {
 
     @ExceptionHandler(UnprocessableEntityException.class)
     public final ResponseEntity<StandardResponseException> handleNotSavedInDatabaseException(UnprocessableEntityException exception){
+        StandardResponseException exceptionResponse = new StandardResponseException(LocalDateTime.now(),
+                exception.getMessage());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    @ExceptionHandler(InvalidDateInputException.class)
+    public final ResponseEntity<StandardResponseException> handleInvalidDateInputException(InvalidDateInputException exception){
         StandardResponseException exceptionResponse = new StandardResponseException(LocalDateTime.now(),
                 exception.getMessage());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.UNPROCESSABLE_ENTITY);

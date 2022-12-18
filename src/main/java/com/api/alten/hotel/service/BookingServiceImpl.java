@@ -25,16 +25,12 @@ public class BookingServiceImpl implements BookingService{
     private DateTableService dateTableService;
 
     public Reservation createBooking(ReservationRequest reservationRequest){
-        var checkIn = LocalDate.parse(reservationRequest.getCheckIn());
-        var checkOut = LocalDate.parse(reservationRequest.getCheckOut());
-        var client = reservationRequest.getClientName();
+        var checkIn = customParseDate(reservationRequest.getCheckIn());
+        var checkOut = customParseDate(reservationRequest.getCheckOut());
 
         preValidations(checkIn,checkOut);
 
-        var booking = reservationService.createReservation(client,checkIn,checkOut);
-        dateTableService.updateDateTable(checkIn,checkOut, booking.getReservationCode());
-
-        return booking;
+        return reservationService.createReservation(reservationRequest.getClientName(),checkIn,checkOut);
     }
 
     private void preValidations(LocalDate checkIn,LocalDate checkOut){
@@ -42,7 +38,6 @@ public class BookingServiceImpl implements BookingService{
         isValidAmountOfDays(checkIn,checkOut);
         isValidMonth(checkIn,checkOut);
         isValidYear(checkIn,checkOut);
-        dateTableService.checkAvailability( checkIn,checkOut);
     }
 
 

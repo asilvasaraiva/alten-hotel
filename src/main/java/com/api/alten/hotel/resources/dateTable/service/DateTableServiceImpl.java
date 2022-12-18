@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,26 +21,24 @@ public class DateTableServiceImpl implements DateTableService{
 
     @Override
     public boolean checkAvailability(LocalDate checkIn,LocalDate checkOut) {
-        var intervalOfDates = checkIn.datesUntil(checkOut).collect(Collectors.toList());
-        var listOfDates = dateTableRepository.findByBookedDateIn(intervalOfDates);
-        if(listOfDates.size() == 0){
+        var intervalOfDates = checkIn.equals(checkOut)? List.of(checkIn) : checkIn.datesUntil(checkOut).toList();
+        var occurrences = dateTableRepository.findByBookedDateIn(intervalOfDates);
+        if(occurrences.size() == 0){
             return true;
         }else{
-            throw new UnavailableDateException("Dates "+ listOfDates.toString() +" already reserved");
+            throw new UnavailableDateException("Dates "+ occurrences.toString() +" already reserved");
         }
     }
 
     @Override
     public void updateDateTable(LocalDate checkIn, LocalDate checkOut, Long reservationCode) {
-        var intervalOfDates = checkIn.datesUntil(checkOut).collect(Collectors.toList());
+        var intervalOfDates = checkIn.datesUntil(checkOut).toList();
         if(intervalOfDates.size()>1){
             intervalOfDates.forEach(d-> saveDates(reservationCode,d));
         }else{
             saveDates(reservationCode,checkIn);
         }
     }
-
-
 
 
     public void saveDates(Long reservationCode,LocalDate date){

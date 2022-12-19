@@ -49,4 +49,11 @@ public class GlobalHandlerException {
                 exception.getMessage());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.PRECONDITION_FAILED);
     }
+
+    @ExceptionHandler(NotFoundException.class)
+    public final ResponseEntity<StandardResponseException> handleNotFoundException(NotFoundException exception){
+        StandardResponseException exceptionResponse = new StandardResponseException(LocalDateTime.now(),
+                exception.getMessage());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
 }

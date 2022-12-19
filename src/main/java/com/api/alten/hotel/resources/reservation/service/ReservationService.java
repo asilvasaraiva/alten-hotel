@@ -2,6 +2,7 @@ package com.api.alten.hotel.resources.reservation.service;
 
 
 
+import com.api.alten.hotel.exceptions.NotFoundException;
 import com.api.alten.hotel.exceptions.UnavailableDateException;
 import com.api.alten.hotel.resources.dateTable.service.DateTableService;
 import com.api.alten.hotel.resources.reservation.entity.Reservation;
@@ -84,5 +85,16 @@ public class ReservationService {
         }catch (Exception e){
             throw new UnavailableDateException("Error to retrieve reservation with reservation code "+ reservationCode+" from database");
         }
+    }
+
+    public HttpStatus cancelReservation(Long reservationCode){
+        var reservation = Optional.ofNullable(reservationRepository.findByReservationCode(reservationCode));
+
+        if(reservation.isPresent()){
+            dateTableService.deleteByReservationCode(reservationCode);
+            reservationRepository.deleteById(reservation.get().getId());
+            return HttpStatus.OK;
+        }
+        throw new NotFoundException();
     }
 }

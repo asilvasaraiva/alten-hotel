@@ -8,4 +8,6 @@ public interface BookingService {
     Reservation createBooking(ReservationRequest reservationRequest);
 
     HttpStatus modifyBooking(Long id, ReservationRequest reservationRequest);
+
+    HttpStatus cancelBooking(Long id);
 }

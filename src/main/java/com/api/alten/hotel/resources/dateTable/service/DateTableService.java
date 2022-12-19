@@ -14,5 +14,7 @@ public interface DateTableService {
     public boolean updateDateTable(Long reservationCode,LocalDate newCheckIn, LocalDate newCheckOut);
 
     public void saveDates(Long reservationCode, LocalDate date);
+
+    public void deleteByReservationCode(Long reservationCode);
 }
 

@@ -23,9 +23,12 @@ public class BookingController {
     }
 
     @PatchMapping("/{reservationCode}/modify")
-    public ResponseEntity modifyReservation(@PathVariable("reservationCode") Long reservationCode, @RequestBody ReservationRequest reservationRequest){
+    public ResponseEntity<HttpStatus> modifyReservation(@PathVariable("reservationCode") Long reservationCode, @RequestBody ReservationRequest reservationRequest){
         return ResponseEntity.ok(bookingService.modifyBooking(reservationCode,reservationRequest));
     }
 
-
+    @DeleteMapping("/{reservationCode}/cancel")
+    public ResponseEntity<HttpStatus>  cancelReservation(@PathVariable("reservationCode") Long reservationCode){
+        return ResponseEntity.ok(bookingService.cancelBooking(reservationCode));
+    }
 }

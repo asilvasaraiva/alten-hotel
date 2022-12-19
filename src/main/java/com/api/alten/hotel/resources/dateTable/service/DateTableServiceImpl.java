@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -101,6 +102,16 @@ public class DateTableServiceImpl implements DateTableService{
         var dt = DateTable.builder().reservationCode(reservationCode).bookedDate(date).build();
         dateTableRepository.save(dt);
         log.info("Chosen date {} and reservation {} saved successfully into Data Table", date, reservationCode);
+    }
+
+    @Override
+    public void deleteByReservationCode(Long reservationCode) {
+        var reservedDates = Optional.ofNullable(dateTableRepository.findByReservationCode(reservationCode));
+        if(reservedDates.isPresent()){
+            dateTableRepository.deleteAll(reservedDates.get());
+        }else{
+            throw new UnavailableDateException("Error to delete reservation "+reservationCode+ " from database.");
+        }
     }
 
 }

@@ -41,5 +41,10 @@ public class BookingServiceImpl implements BookingService{
         return reservationService.modifyReservation(reservationCode,newCheckIn,newCheckOut);
     }
 
+    @Override
+    public HttpStatus cancelBooking(Long reservationCode) {
+        return reservationService.cancelReservation(reservationCode);
+    }
+
 
 }

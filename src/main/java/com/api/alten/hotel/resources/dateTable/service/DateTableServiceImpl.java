@@ -20,6 +20,7 @@ public class DateTableServiceImpl implements DateTableService{
     @Autowired
     private DateTableRepository dateTableRepository;
 
+
     @Override
     public boolean checkAvailability(LocalDate checkIn,LocalDate checkOut) {
         var occurrences = findOccurrences(checkIn, checkOut);
@@ -69,8 +70,8 @@ public class DateTableServiceImpl implements DateTableService{
 
     private boolean increaseReservationDays(List<DateTable>listOfSavedDates,Long reservationCode,List<LocalDate> newSetOfDays){
         var daysToCheckAndSave = elementsANotInB(newSetOfDays,listOfSavedDates.stream().map(DateTable::getBookedDate).toList());
-
-        if(dateTableRepository.findByBookedDateIn(daysToCheckAndSave).size()==0){
+        var allDaysPermitted = dateTableRepository.findByBookedDateIn(daysToCheckAndSave);
+        if(allDaysPermitted.size()==0){
             daysToCheckAndSave.forEach(r->saveDates(reservationCode,r));
             return true;
         }else {
@@ -105,6 +106,7 @@ public class DateTableServiceImpl implements DateTableService{
     }
 
     @Override
+    @Transactional
     public void deleteByReservationCode(Long reservationCode) {
         var reservedDates = Optional.ofNullable(dateTableRepository.findByReservationCode(reservationCode));
         if(reservedDates.isPresent()){

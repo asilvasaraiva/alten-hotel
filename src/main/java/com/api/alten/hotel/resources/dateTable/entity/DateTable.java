@@ -3,6 +3,7 @@ package com.api.alten.hotel.resources.dateTable.entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serial;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @Builder
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 public class DateTable implements Serializable {
 
     @Serial

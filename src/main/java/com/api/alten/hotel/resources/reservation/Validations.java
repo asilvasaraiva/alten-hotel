@@ -13,6 +13,7 @@ public class Validations {
 
     private static final int MAX_LENGTH_OF_MONTHS = 1;
     private static final int MAX_AMOUNT_OF_DAYS = 3;
+    private static final int MIN_AMOUNT_OF_DAYS = 1;
     private static final int MIN_DAYS_TO_START_A_RESERVATION = 1;
 
     public static void preValidations(LocalDate checkIn,LocalDate checkOut){
@@ -36,7 +37,12 @@ public class Validations {
 
     private static void isValidAmountOfDays(LocalDate checkIn, LocalDate checkOut) {
         var daysBetween = Period.between(checkIn, checkOut).getDays();
-        if( !(daysBetween>=0 && daysBetween <= MAX_AMOUNT_OF_DAYS)){
+
+        if( daysBetween <= 0){
+            throw new InvalidCheckInDateException("The minimum length of day per reservation is "+MIN_AMOUNT_OF_DAYS+ " day.");
+        }
+
+        if(!(daysBetween <= MAX_AMOUNT_OF_DAYS)){
             throw new InvalidCheckInDateException("The maximum length of days per reservation is "+MAX_AMOUNT_OF_DAYS+ " days.");
         }
     }

@@ -14,4 +14,7 @@ import java.util.List;
 public interface DateTableRepository extends JpaRepository<DateTable,Long> {
     @Query("SELECT dt.bookedDate FROM DateTable dt WHERE dt.bookedDate IN (:dateInterval) ")
     List<LocalDate> findByBookedDateIn(List<LocalDate> dateInterval);
+
+    List<DateTable> findByReservationCode(Long reservationCode);
+
 }

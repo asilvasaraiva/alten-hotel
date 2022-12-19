@@ -3,9 +3,7 @@ package com.api.alten.hotel.resources.reservation.entity;
 import com.api.alten.hotel.resources.dateTable.entity.DateTable;
 import com.api.alten.hotel.resources.room.entity.Room;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serial;
@@ -16,6 +14,8 @@ import java.time.LocalDate;
 @Table(name = "reservation")
 @Entity
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Reservation implements Serializable {
     @Serial
     private static final long serialVersionUID = 5898961581308962828L;

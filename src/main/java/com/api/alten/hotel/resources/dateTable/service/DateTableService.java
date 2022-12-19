@@ -9,8 +9,10 @@ public interface DateTableService {
 
     public List<LocalDate> findOccurrences(LocalDate checkIn, LocalDate checkOut);
 
-    public  void updateDateTable(LocalDate checkIn,LocalDate checkOut,Long reservationCode);
+    public void saveInDateTable(LocalDate checkIn,LocalDate checkOut,Long reservationCode);
 
-    public void saveDates(Long reservationCode,LocalDate date);
+    public boolean updateDateTable(Long reservationCode,LocalDate newCheckIn, LocalDate newCheckOut);
+
+    public void saveDates(Long reservationCode, LocalDate date);
 }
 

@@ -7,10 +7,8 @@ import com.api.alten.hotel.resources.reservation.service.ReservationService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.stream.Collectors;
 
 import static com.api.alten.hotel.resources.reservation.Validations.*;
 
@@ -33,7 +31,15 @@ public class BookingServiceImpl implements BookingService{
         return reservationService.createReservation(reservationRequest.getClientName(),checkIn,checkOut);
     }
 
+    @Override
+    public HttpStatus modifyBooking(Long reservationCode, ReservationRequest reservationRequest) {
+        var newCheckIn = customParseDate(reservationRequest.getCheckIn());
+        var newCheckOut = customParseDate(reservationRequest.getCheckOut());
 
+        preValidations(newCheckIn,newCheckOut);
+
+        return reservationService.modifyReservation(reservationCode,newCheckIn,newCheckOut);
+    }
 
 
 }

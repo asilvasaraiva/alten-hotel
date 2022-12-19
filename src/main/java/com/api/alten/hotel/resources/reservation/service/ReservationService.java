@@ -9,10 +9,12 @@ import com.api.alten.hotel.resources.reservation.repository.ReservationRepositor
 import com.api.alten.hotel.resources.room.service.RoomService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -37,7 +39,6 @@ public class ReservationService {
         }
     }
 
-
     public Reservation createReservation(String client, LocalDate checkIn,LocalDate checkOut){
         dateTableService.checkAvailability(checkIn,checkOut);
         var room = roomService.getRoom();
@@ -50,7 +51,7 @@ public class ReservationService {
                 .build();
         save(book);
 
-        dateTableService.updateDateTable(checkIn,checkOut, book.getReservationCode());
+        dateTableService.saveInDateTable(checkIn,checkOut, book.getReservationCode());
 
         return book;
     }
@@ -60,4 +61,28 @@ public class ReservationService {
         return random.nextInt(10000);
     }
 
+    public HttpStatus modifyReservation(Long id, LocalDate newCheckIn, LocalDate newCheckOut){
+        var reservation = Optional.ofNullable(getReservationByCode(id));
+
+        if(reservation.isPresent()){
+            var currentReservation = reservation.get();
+            dateTableService.updateDateTable(currentReservation.getReservationCode(),newCheckIn,newCheckOut);
+            currentReservation.setCheckIn(newCheckIn);
+            currentReservation.setCheckOut(newCheckOut);
+            reservationRepository.save(reservation.get());
+            return HttpStatus.OK;
+        }
+
+        return HttpStatus.UNPROCESSABLE_ENTITY;
+    }
+
+    @Transactional
+    public Reservation getReservationByCode(Long reservationCode){
+        try {
+            log.info("Retrieving reservation by reservation ID {} ", reservationCode);
+            return reservationRepository.findByReservationCode(reservationCode);
+        }catch (Exception e){
+            throw new UnavailableDateException("Error to retrieve reservation with reservation code "+ reservationCode+" from database");
+        }
+    }
 }

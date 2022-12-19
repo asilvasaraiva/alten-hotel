@@ -10,6 +10,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+/**
+ * Class responsible for receive, delegate and answer back a request related to the Room management.
+ * @author Alexsandro Saraiva
+ */
 @RestController
 @RequestMapping("/room")
 @Api(value = "API entrypoint to verify the availability of the room",tags = "Room Management")
@@ -18,7 +23,12 @@ public class RoomController {
     @Autowired
     private RoomService roomService;
 
-    @ApiOperation(value = "Verify in the API System if a range of dates is available to book",
+    /**
+     * Endpoint method contained in the RoomController class that verifies if a room is available in the informed range of days.
+     * @param reservationRequest Object that contains within the client name, check-in and check-out dates.
+     * @return A true or false value if in the room is available in the range of days provided.
+     */
+    @ApiOperation(value = "Verify in the API System if in a range of dates the room is available to be booked",
             response = Boolean.class
     )
     @GetMapping(value = "/available", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

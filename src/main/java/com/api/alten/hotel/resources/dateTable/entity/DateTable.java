@@ -10,6 +10,10 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+/**
+ * Class entity that link the reservation with the range of days in the reservation through the reservation code.
+ * @author Alexsandro Saraiva
+ */
 @Data
 @Builder
 @Entity

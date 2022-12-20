@@ -42,7 +42,6 @@ public class ReservationServiceImpl implements ReservationService{
         try {
             log.info("Saving reservation to client: {} in room {}", reservation.getClientName(),reservation.getRoom().getId());
             reservationRepository.save(reservation);
-            log.info("Reservation to client {} in room {} saved successfully ", reservation.getClientName(),reservation.getRoom().getId());
         }catch (Exception e){
             throw new UnavailableDateException("Error to save reservation with reservation code "+ reservation.getReservationCode()+" in database");
         }
@@ -76,7 +75,7 @@ public class ReservationServiceImpl implements ReservationService{
      * Utility method implementation for createReservation function that generate the reservation code.
      * @return A Long value used as reservation code.
      */
-    private long genReservationCode(){
+    public long genReservationCode(){
         return System.currentTimeMillis();
     }
 
@@ -108,7 +107,7 @@ public class ReservationServiceImpl implements ReservationService{
      * @return A reservation object.
      */
     @Transactional
-    private Reservation getReservationByCode(Long reservationCode){
+    public Reservation getReservationByCode(Long reservationCode){
         try {
             log.info("Retrieving reservation by reservation ID {} ", reservationCode);
             return reservationRepository.findByReservationCode(reservationCode);

@@ -99,14 +99,12 @@ public class DateTableServiceImpl implements DateTableService{
      * @param listOfSavedDates List of DateTable with the dates already saved in database for this reservation.
      * @param newSetOfDays List of LocalDate with the new set of days to be inserted in the same reservation.
      * @param reservationCode Long reservation code value.
-     * @return A boolean value statement.
      */
-    private boolean increaseReservationDays(List<DateTable>listOfSavedDates,Long reservationCode,List<LocalDate> newSetOfDays){
+    private void increaseReservationDays(List<DateTable>listOfSavedDates,Long reservationCode,List<LocalDate> newSetOfDays){
         var daysToCheckAndSave = elementsANotInB(newSetOfDays,listOfSavedDates.stream().map(DateTable::getBookedDate).toList());
         var allDaysPermitted = dateTableRepository.findByBookedDateIn(daysToCheckAndSave);
         if(allDaysPermitted.size()==0){
             daysToCheckAndSave.forEach(r->saveDates(reservationCode,r));
-            return true;
         }else {
             throw new UnavailableDateException("Dates already reserved");
         }
@@ -117,16 +115,14 @@ public class DateTableServiceImpl implements DateTableService{
      * amount of days in his/her reservation.
      * @param listOfSavedDates List of DateTable with the dates already saved in database for this reservation.
      * @param newSetOfDays List of LocalDate with the new set of days to be modified in the same reservation.
-     * @return A boolean value statement.
      */
     @Transactional
-    private boolean decreaseReservationDays(List<DateTable>listOfSavedDates,List<LocalDate> newSetOfDays){
+    private void decreaseReservationDays(List<DateTable>listOfSavedDates,List<LocalDate> newSetOfDays){
         for(DateTable dt : listOfSavedDates){
             if(!newSetOfDays.contains(dt.getBookedDate())){
                 dateTableRepository.delete(dt);
             }
         }
-        return true;
     }
 
     /**

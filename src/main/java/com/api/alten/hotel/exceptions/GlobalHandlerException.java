@@ -91,7 +91,7 @@ public class GlobalHandlerException {
     public final ResponseEntity<StandardResponseException> handleUnavailableDateException(UnavailableDateException unavailableDateException){
         StandardResponseException exceptionResponse = new StandardResponseException(LocalDateTime.now(),
                 unavailableDateException.getMessage());
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.PRECONDITION_FAILED);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.CONFLICT);
     }
 
     /**

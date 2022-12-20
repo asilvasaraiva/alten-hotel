@@ -13,6 +13,10 @@ import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Class that implements the methods signatures defined in DateTableService.
+ * @author Alexsandro Saraiva
+ */
 @Service
 @Slf4j
 public class DateTableServiceImpl implements DateTableService{
@@ -21,16 +25,26 @@ public class DateTableServiceImpl implements DateTableService{
     private DateTableRepository dateTableRepository;
 
 
+    /**
+     * The implementation of a method that verify if a range of days is available or not to be booked.
+     * @param checkIn Input check-in date value.
+     * @param checkOut Input check-out date value.
+     */
     @Override
-    public boolean checkAvailability(LocalDate checkIn,LocalDate checkOut) {
+    public void checkAvailability(LocalDate checkIn,LocalDate checkOut) {
         var occurrences = findOccurrences(checkIn, checkOut);
-        if(occurrences.size() == 0){
-            return true;
-        }else{
+        if(!(occurrences.size() == 0)){
             throw new UnavailableDateException("Dates "+ occurrences.toString() +" already reserved");
         }
     }
 
+    /**
+     * The implementation of a method that retrieve a list of dates between check-in and check-out if
+     * they exist in database.
+     * @param checkIn Input check-in date value.
+     * @param checkOut Input check-out date value.
+     * @return A List of LocalDate object instance with reservation code and the date associated with.
+     */
     @Override
     @Transactional
     public List<LocalDate> findOccurrences(LocalDate checkIn, LocalDate checkOut) {
@@ -38,6 +52,13 @@ public class DateTableServiceImpl implements DateTableService{
         return dateTableRepository.findByBookedDateIn(intervalOfDates);
     }
 
+    /**
+     * The implementation of a method that persist the dates between check-in and check-out with the
+     * reservation code in database.
+     * @param checkIn LocalDate check-in date value.
+     * @param checkOut LocalDate check-out date value.
+     * @param reservationCode Long reservation code value.
+     */
     @Override
     public void saveInDateTable(LocalDate checkIn, LocalDate checkOut, Long reservationCode) {
         var intervalOfDates = checkIn.datesUntil(checkOut).toList();
@@ -48,8 +69,15 @@ public class DateTableServiceImpl implements DateTableService{
         }
     }
 
+    /**
+     * The implementation of a method that update the dates between check-in and check-out with the
+     * reservation code in database for an existent reservation.
+     * @param newCheckIn LocalDate check-in date value.
+     * @param newCheckOut LocalDate check-out date value.
+     * @param reservationCode Long reservation code value.
+     */
     @Override
-    public boolean updateDateTable(Long reservationCode, LocalDate newCheckIn, LocalDate newCheckOut) {
+    public void updateDateTable(Long reservationCode, LocalDate newCheckIn, LocalDate newCheckOut) {
         var periodOfDays = Period.between(newCheckIn,newCheckOut).getDays();
         var listOfSavedDates = dateTableRepository.findByReservationCode(reservationCode);
         var occurrences = findOccurrences(newCheckIn, newCheckOut);
@@ -58,16 +86,21 @@ public class DateTableServiceImpl implements DateTableService{
         if (occurrences.size() == 0) {
             saveInDateTable(newCheckIn, newCheckOut, reservationCode);
             listOfSavedDates.forEach(s -> dateTableRepository.delete(s));
-            return true;
-        }
-
-        if(periodOfDays > listOfSavedDates.size()){
-            return increaseReservationDays(listOfSavedDates,reservationCode,newSetOfDays);
+        }else if(periodOfDays > listOfSavedDates.size()){
+            increaseReservationDays(listOfSavedDates, reservationCode, newSetOfDays);
         }else{
-           return decreaseReservationDays(listOfSavedDates,newSetOfDays);
+            decreaseReservationDays(listOfSavedDates, newSetOfDays);
         }
     }
 
+    /**
+     * Utility method implementation for updateDateTable function that deals when the client need to increase the
+     * amount of days in his/her reservation.
+     * @param listOfSavedDates List of DateTable with the dates already saved in database for this reservation.
+     * @param newSetOfDays List of LocalDate with the new set of days to be inserted in the same reservation.
+     * @param reservationCode Long reservation code value.
+     * @return A boolean value statement.
+     */
     private boolean increaseReservationDays(List<DateTable>listOfSavedDates,Long reservationCode,List<LocalDate> newSetOfDays){
         var daysToCheckAndSave = elementsANotInB(newSetOfDays,listOfSavedDates.stream().map(DateTable::getBookedDate).toList());
         var allDaysPermitted = dateTableRepository.findByBookedDateIn(daysToCheckAndSave);
@@ -79,6 +112,13 @@ public class DateTableServiceImpl implements DateTableService{
         }
     }
 
+    /**
+     * Utility method implementation for updateDateTable function that deals when the client need to decrease the
+     * amount of days in his/her reservation.
+     * @param listOfSavedDates List of DateTable with the dates already saved in database for this reservation.
+     * @param newSetOfDays List of LocalDate with the new set of days to be modified in the same reservation.
+     * @return A boolean value statement.
+     */
     @Transactional
     private boolean decreaseReservationDays(List<DateTable>listOfSavedDates,List<LocalDate> newSetOfDays){
         for(DateTable dt : listOfSavedDates){
@@ -89,14 +129,34 @@ public class DateTableServiceImpl implements DateTableService{
         return true;
     }
 
+    /**
+     * Utility method implementation for updateDateTable function that generate a list with the new range of days
+     * selected to modify a existent reservation
+     * @param newCheckIn List of DateTable with the dates already saved in database for this reservation.
+     * @param newCheckOut List of LocalDate with the new set of days to modify the same reservation.
+     * @return A list with the range of days between the check-in day until check-out day.
+     */
     private List<LocalDate> newSetOfDays(LocalDate newCheckIn, LocalDate newCheckOut){
         return newCheckIn.datesUntil(newCheckOut).toList();
     }
 
+    /**
+     * Utility method implementation for updateDateTable function that removes the dates already chosen by the
+     * same person when modifying a reservation period of date.
+     * @param A List of DateTable with the dates already saved in database for this reservation.
+     * @param B List of LocalDate with the new set of days chosen to modify the same reservation.
+     * @return A list with the new range of days between the new check-in day until new check-out day excepting
+     * the days previously booked.
+     */
     private List<LocalDate> elementsANotInB(List<LocalDate> A,List<LocalDate> B){
         return A.stream().filter(element -> !B.contains(element)).toList();
     }
 
+    /**
+     * The implementation of a method that save the date and reservation code in DataTable database.
+     * @param reservationCode Long reservation code value.
+     * @param date LocalDate date value.
+     */
     @Transactional
     public void saveDates(Long reservationCode,LocalDate date){
         log.info("Saving chosen date {} and reservation {} into Data Table", date, reservationCode);
@@ -105,6 +165,10 @@ public class DateTableServiceImpl implements DateTableService{
         log.info("Chosen date {} and reservation {} saved successfully into Data Table", date, reservationCode);
     }
 
+    /**
+     * The implementation of a method that delete a DataTable object in database using the reservation code.
+     * @param reservationCode Long reservation code value.
+     */
     @Override
     @Transactional
     public void deleteByReservationCode(Long reservationCode) {

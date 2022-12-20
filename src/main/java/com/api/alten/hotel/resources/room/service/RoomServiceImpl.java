@@ -17,6 +17,10 @@ import java.util.Optional;
 import static com.api.alten.hotel.resources.reservation.Validations.customParseDate;
 import static com.api.alten.hotel.resources.reservation.Validations.preValidations;
 
+/**
+ * Class that implements the methods signatures defined in RoomService.
+ * @author Alexsandro Saraiva
+ */
 @Service
 @Slf4j
 public class RoomServiceImpl implements RoomService{
@@ -26,8 +30,12 @@ public class RoomServiceImpl implements RoomService{
     @Autowired
     private DateTableService dateTableService;
 
+    /**
+     * Utility method implementation for getRoom function that generates, save in database and return a room.
+     * @return A Room object.
+     */
     @Transactional
-    public Room create(){
+    private Room create(){
         try {
             log.info("Creating new room in database");
             var room = Room.builder().name("Room One").build();
@@ -37,12 +45,20 @@ public class RoomServiceImpl implements RoomService{
         }
     }
 
+    /**
+     * The implementation of a method that retrieve a Room in database or create one if none can be found.
+     * @return Room object.
+     */
     @Override
     public Room getRoom() {
         Optional<Room> room = roomRepository.findById(1L);
         return room.orElseGet(this::create);
     }
 
+    /**
+     * The implementation of a method that returns true or false if a room is available to the informed period of time.
+     * @return Boolean true or false.
+     */
     @Override
     public boolean checkAvailability(ReservationRequest reservationRequest) {
         var checkIn = customParseDate(reservationRequest.getCheckIn());

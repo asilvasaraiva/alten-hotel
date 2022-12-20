@@ -12,6 +12,10 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Entity class that represents a room.
+ * @author Alexsandro Saraiva
+ */
 @Entity
 @Table(name = "room")
 @Data

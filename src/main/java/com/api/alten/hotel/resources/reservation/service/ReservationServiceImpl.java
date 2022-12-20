@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.Random;
 
 /**
  * Class that implements the methods signatures defined in ReservationService.
@@ -50,7 +49,7 @@ public class ReservationServiceImpl implements ReservationService{
     }
 
     /**
-     * The implementation of a method that create and saves a new reservation .
+     * The implementation of a method that create a new reservation .
      * @param client String name of client.
      * @param checkIn LocalDate date of check-in.
      * @param checkOut LocalDate date of check-out.
@@ -82,7 +81,8 @@ public class ReservationServiceImpl implements ReservationService{
     }
 
     /**
-     * The implementation of a method that modifies new reservation .
+     * The implementation of a method that modifies an existent reservation with a reservation code generated when
+     * creating the reservation.
      * @param reservationCode Long reservation code.
      * @param newCheckIn LocalDate new date of check-in.
      * @param newCheckOut LocalDate new date of check-out.
@@ -118,11 +118,10 @@ public class ReservationServiceImpl implements ReservationService{
     }
 
     /**
-     * The implementation of a method that cancel an existent reservation .
+     * The implementation of a method that delete an existent reservation.
      * @param reservationCode Long reservation code.
      * @return HttpStatus with the status.
      */
-
     public HttpStatus cancelReservation(Long reservationCode){
         var reservation = Optional.ofNullable(reservationRepository.findByReservationCode(reservationCode));
 

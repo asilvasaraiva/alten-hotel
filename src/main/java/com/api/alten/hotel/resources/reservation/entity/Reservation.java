@@ -10,6 +10,11 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+/**
+ * Entity class that represents a reservation.
+ * @author Alexsandro Saraiva
+ */
+
 @Data
 @Table(name = "reservation")
 @Entity

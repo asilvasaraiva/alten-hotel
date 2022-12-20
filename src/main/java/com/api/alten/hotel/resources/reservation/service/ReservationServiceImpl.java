@@ -18,6 +18,11 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Random;
 
+/**
+ * Class that implements the methods signatures defined in ReservationService.
+ * @author Alexsandro Saraiva
+ */
+
 @Service
 @Slf4j
 public class ReservationServiceImpl implements ReservationService{
@@ -29,6 +34,10 @@ public class ReservationServiceImpl implements ReservationService{
     @Autowired
     private DateTableService dateTableService;
 
+    /**
+     * The implementation of a method that save a new reservation in database.
+     * @param reservation Reservation object.
+     */
     @Transactional
     public void save(Reservation reservation){
         try {
@@ -40,6 +49,13 @@ public class ReservationServiceImpl implements ReservationService{
         }
     }
 
+    /**
+     * The implementation of a method that create and saves a new reservation .
+     * @param client String name of client.
+     * @param checkIn LocalDate date of check-in.
+     * @param checkOut LocalDate date of check-out.
+     * @return Reservation object created if successful.
+     */
     public Reservation createReservation(String client, LocalDate checkIn,LocalDate checkOut){
         dateTableService.checkAvailability(checkIn,checkOut);
         var room = roomService.getRoom();
@@ -57,13 +73,23 @@ public class ReservationServiceImpl implements ReservationService{
         return book;
     }
 
+    /**
+     * Utility method implementation for createReservation function that generate the reservation code.
+     * @return A Long value used as reservation code.
+     */
     private long genReservationCode(){
-        Random random = new Random();
-        return random.nextInt(10000);
+        return System.currentTimeMillis();
     }
 
-    public HttpStatus modifyReservation(Long id, LocalDate newCheckIn, LocalDate newCheckOut){
-        var reservation = Optional.ofNullable(getReservationByCode(id));
+    /**
+     * The implementation of a method that modifies new reservation .
+     * @param reservationCode Long reservation code.
+     * @param newCheckIn LocalDate new date of check-in.
+     * @param newCheckOut LocalDate new date of check-out.
+     * @return HttpStatus with the status.
+     */
+    public HttpStatus modifyReservation(Long reservationCode, LocalDate newCheckIn, LocalDate newCheckOut){
+        var reservation = Optional.ofNullable(getReservationByCode(reservationCode));
 
         if(reservation.isPresent()){
             var currentReservation = reservation.get();
@@ -73,12 +99,16 @@ public class ReservationServiceImpl implements ReservationService{
             reservationRepository.save(reservation.get());
             return HttpStatus.OK;
         }
-
-        return HttpStatus.UNPROCESSABLE_ENTITY;
+        return HttpStatus.NOT_MODIFIED;
     }
 
+    /**
+     * Utility method implementation for modifyReservation function that retrieves a reservation based in
+     * the reservation code.
+     * @return A reservation object.
+     */
     @Transactional
-    public Reservation getReservationByCode(Long reservationCode){
+    private Reservation getReservationByCode(Long reservationCode){
         try {
             log.info("Retrieving reservation by reservation ID {} ", reservationCode);
             return reservationRepository.findByReservationCode(reservationCode);
@@ -86,6 +116,12 @@ public class ReservationServiceImpl implements ReservationService{
             throw new UnavailableDateException("Error to retrieve reservation with reservation code "+ reservationCode+" from database");
         }
     }
+
+    /**
+     * The implementation of a method that cancel an existent reservation .
+     * @param reservationCode Long reservation code.
+     * @return HttpStatus with the status.
+     */
 
     public HttpStatus cancelReservation(Long reservationCode){
         var reservation = Optional.ofNullable(reservationRepository.findByReservationCode(reservationCode));

@@ -153,7 +153,7 @@ public class DateTableServiceImpl implements DateTableService{
     }
 
     /**
-     * The implementation of a method that save the date and reservation code in DataTable database.
+     * The implementation of a method that save the date and reservation code in database.
      * @param reservationCode Long reservation code value.
      * @param date LocalDate date value.
      */

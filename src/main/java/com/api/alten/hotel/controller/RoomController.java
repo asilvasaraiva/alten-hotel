@@ -6,9 +6,12 @@ import com.api.alten.hotel.resources.room.service.RoomService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 
 /**
@@ -25,15 +28,16 @@ public class RoomController {
 
     /**
      * Endpoint method contained in the RoomController class that verifies if a room is available in the informed range of days.
-     * @param reservationRequest Object that contains within the client name, check-in and check-out dates.
+     * @param checkIn Object that contains within the client name, check-in and check-out dates.
      * @return A true or false value if in the room is available in the range of days provided.
      */
     @ApiOperation(value = "Verify in the API System if in a range of dates the room is available to be booked",
             response = Boolean.class
     )
-    @GetMapping(value = "/available", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> checkAvailable(@RequestBody ReservationRequest reservationRequest){
-        return ResponseEntity.ok(roomService.checkAvailability(reservationRequest));
+    @GetMapping(value = "/available", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> checkAvailable(@RequestParam("checkIn")  String checkIn,
+                                                  @RequestParam("checkOut") String checkOut){
+        return ResponseEntity.ok(roomService.checkAvailability(checkIn,checkOut));
     }
 
 

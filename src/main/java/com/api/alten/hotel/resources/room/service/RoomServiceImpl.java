@@ -60,9 +60,9 @@ public class RoomServiceImpl implements RoomService{
      * @return Boolean true or false.
      */
     @Override
-    public boolean checkAvailability(ReservationRequest reservationRequest) {
-        var checkIn = customParseDate(reservationRequest.getCheckIn());
-        var checkOut = customParseDate(reservationRequest.getCheckOut());
+    public boolean checkAvailability(String checkInDate, String checkOutDate) {
+        var checkIn = customParseDate(checkInDate);
+        var checkOut = customParseDate(checkOutDate);
         preValidations(checkIn,checkOut);
         var occurrences = dateTableService.findOccurrences(checkIn,checkOut);
         return occurrences.size() == 0;

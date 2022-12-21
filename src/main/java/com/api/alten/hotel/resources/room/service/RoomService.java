@@ -11,5 +11,5 @@ public interface RoomService {
 
     public Room getRoom();
 
-    public boolean checkAvailability(String checkIn, String checkOut );
+    public String checkAvailability(String checkIn, String checkOut );
 }

@@ -57,14 +57,17 @@ public class RoomServiceImpl implements RoomService{
 
     /**
      * The implementation of a method that returns true or false if a room is available to the informed period of time.
-     * @return Boolean true or false.
+     * @param checkInDate A string that contains the check-in desirable date.
+     * @param checkOutDate A string that contains the check-out desirable date.
+     * @return A string informing if the provided period is available to be booked or the days already reserved in the
+     * same interval.
      */
     @Override
-    public boolean checkAvailability(String checkInDate, String checkOutDate) {
+    public String checkAvailability(String checkInDate, String checkOutDate) {
         var checkIn = customParseDate(checkInDate);
         var checkOut = customParseDate(checkOutDate);
         preValidations(checkIn,checkOut);
         var occurrences = dateTableService.findOccurrences(checkIn,checkOut);
-        return occurrences.size() == 0;
+        return occurrences.size() == 0 ? "Available Dates": "Dates "+ occurrences.toString() +" already reserved";
     }
 }

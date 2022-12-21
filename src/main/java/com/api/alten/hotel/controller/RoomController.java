@@ -27,15 +27,18 @@ public class RoomController {
     private RoomService roomService;
 
     /**
-     * Endpoint method contained in the RoomController class that verifies if a room is available in the informed range of days.
-     * @param checkIn Object that contains within the client name, check-in and check-out dates.
-     * @return A true or false value if in the room is available in the range of days provided.
+     * Endpoint method contained in the RoomController class that verifies if a room is available in
+     * the informed range of days.
+     * @param checkIn A string that contains the check-in desirable date.
+     * @param checkOut A string that contains the check-out desirable date.
+     * @return A string informing if the provided period is available to be booked or the days already reserved in the
+     * same interval.
      */
     @ApiOperation(value = "Verify in the API System if in a range of dates the room is available to be booked",
             response = Boolean.class
     )
     @GetMapping(value = "/available", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> checkAvailable(@RequestParam("checkIn")  String checkIn,
+    public ResponseEntity<String> checkAvailable(@RequestParam("checkIn")  String checkIn,
                                                   @RequestParam("checkOut") String checkOut){
         return ResponseEntity.ok(roomService.checkAvailability(checkIn,checkOut));
     }

@@ -1,0 +1,42 @@
+version: '3'
+services:
+  app:
+    image: asilvasaraiva/hotel-cancun-api
+    container_name: hotel-cancun-api
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/hotel-cancun
+      - SPRING_DATASOURCE_USERNAME=hotel-cancun
+      - SPRING_DATASOURCE_PASSWORD=@hotel-cancun!
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    ports:
+      - "8081:8081"
+    networks:
+      - postgres-compose-network          
+  db:
+    image: 'postgres:13.1-alpine'
+    container_name: db
+    environment:
+      - POSTGRES_USER=hotel-cancun
+      - POSTGRES_PASSWORD=@hotel-cancun!
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres-compose-network
+  pgadmin:
+    image: 'dpage/pgadmin4'
+    container_name: pg
+    depends_on:
+      - db
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=pgadmin!
+    ports:
+      - "5050:80"
+    networks:
+      - postgres-compose-network
+networks: 
+  postgres-compose-network:
+    driver: bridge
+

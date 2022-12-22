@@ -32,9 +32,15 @@ REST API system using Java 17.5 and Spring Boot as a part of the technical asses
 
 ## Running the project:
 
-To run the project in the docker container, execute on the project root path:
+To run the project in the docker container, execute on the project root path the following command:
 
-`$ docker-compose up `
+
+- `$ docker-compose up ` to be able to see all logs and instances running
+  ![pgAdmin 4 ](assets/images/compose-logs.png)
+
+
+- or with a flag `-d ` that means detached 
+at the end of the command to keep the terminal window clear,  `$ docker-compose up -d`
 
 After that, wait a few second and the API endpoints will already be available for calling at `http://localhost:8081/api`.
 
@@ -118,19 +124,15 @@ If you want to run the project locally, without using the docker environment the
    ```
 
 
-
-
 4 - **Get room availability endpoint:**
 
 **Description**: API endpoint that get room availability by a given range of dates.\
-**URI Syntax**: `GET http://localhost:8080/api/room/{id}/availability?check_in={checkIn}&check_out={checkOut}`
+**URI Syntax**: `GET http://localhost:8081/api/room/{id}/availability?check_in={checkIn}&check_out={checkOut}`
 
 **Input**:
 - {id} refers to a room id.
 - {check_in} refers to the customer check in informed date.
 - {check_out} refers to the customer check out informed date.
-
-
 
 **Output**:
 - A String informing that the set of days informed are available:
@@ -139,6 +141,19 @@ If you want to run the project locally, without using the docker environment the
        Available Dates
     }
    ```
+or the days already booked in the interval:
+
+![img.png](img.png)
+
+4 - **Health Check status endpoint**
+
+To be able to check if the application is up and running, there is an endpoint using spring actuator
+
+**URI Syntax**: `GET http://localhost:8081/api/actuator/health` and will return the current 
+status of the application likewise:
+
+![img_1.png](img_1.png)
+
 
 The complete documentation of endpoints can be verified in the link below:
 
@@ -147,6 +162,8 @@ The complete documentation of endpoints can be verified in the link below:
 ```   
 
 The Postman collection is located at the root of the project with the name **Alten_Hotel_API.postman_collection.json**.
+
+
 
 ## Access to Database Manager (PgMyadmin 4)
 

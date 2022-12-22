@@ -11,7 +11,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/actuator/health",
+					"raw": "localhost:8081/api/actuator/health",
 					"host": [
 						"localhost"
 					],
